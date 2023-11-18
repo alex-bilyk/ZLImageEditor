@@ -39,7 +39,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        configImageEditor()
+        if #available(iOS 11.0, *) {
+            configImageEditor()
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     func setupUI() {
@@ -208,22 +212,17 @@ class ViewController: UIViewController {
         }
     }
     
+    @available(iOS 11.0, *)
     func configImageEditor() {
-//        ZLImageEditorUIConfiguration.default()
-//            .languageType(.english)
-//            .customLanguageConfig(
-//                [
-//                    .cancel: "×",
-//                    .editFinish: "👌"
-//                ]
-//            )
-        
         ZLImageEditorConfiguration.default()
-            // Provide a image sticker container view
             .imageStickerContainerView(ImageStickerContainerView())
             .fontChooserContainerView(FontChooserContainerView())
-            // Custom filter
-//            .filters = [.normal]
+        ZLImageEditorUIConfiguration.default().customImageNames = ["zl_clip","zl_filter","zl_imageSticker", "zl_drawLine", "zl_eraser"]
+        ZLImageEditorUIConfiguration.default().hudStyle = .light
+        ZLImageEditorUIConfiguration.default().ashbinNormalBgColor = .red
+        ZLImageEditorUIConfiguration.default().toolTitleNormalColor = .black
+        ZLImageEditorUIConfiguration.default().toolIconHighlightedColor = UIColor(named: "deepBlue")!
+        ZLImageEditorUIConfiguration.default().toolTitleTintColor = UIColor(named: "deepBlue")!
     }
     
     @objc func pickImage() {
