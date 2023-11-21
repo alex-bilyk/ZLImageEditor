@@ -166,7 +166,7 @@ open class ZLEditImageViewController: UIViewController {
     
     open lazy var doneBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(UIImage(named: "checkmark"), for: .normal)
+        btn.setImage(UIImage(named: "checkMark"), for: .normal)
         btn.addTarget(self, action: #selector(doneBtnClick), for: .touchUpInside)
         btn.enlargeInset = 30
         return btn
