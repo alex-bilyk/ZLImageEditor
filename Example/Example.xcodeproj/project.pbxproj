@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EA32CD12B12B41C00024731 /* TwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA32CD02B12B41C00024731 /* TwoViewController.swift */; };
 		985A2D6A282A85B5007AE0C6 /* cubano-regular-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 985A2D57282A85B4007AE0C6 /* cubano-regular-webfont.ttf */; };
 		985A2D6B282A85B5007AE0C6 /* Homestead-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 985A2D58282A85B4007AE0C6 /* Homestead-Regular.ttf */; };
 		985A2D6C282A85B5007AE0C6 /* Haymaker.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 985A2D59282A85B4007AE0C6 /* Haymaker.ttf */; };
@@ -90,6 +91,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2EA32CD02B12B41C00024731 /* TwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoViewController.swift; sourceTree = "<group>"; };
 		985A2D57282A85B4007AE0C6 /* cubano-regular-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "cubano-regular-webfont.ttf"; sourceTree = "<group>"; };
 		985A2D58282A85B4007AE0C6 /* Homestead-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Homestead-Regular.ttf"; sourceTree = "<group>"; };
 		985A2D59282A85B4007AE0C6 /* Haymaker.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Haymaker.ttf; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				E402093E256BAA420077F5DC /* SnapKit */,
 				E4020927256BA9D70077F5DC /* AppDelegate.swift */,
 				E402092B256BA9D70077F5DC /* ViewController.swift */,
+				2EA32CD02B12B41C00024731 /* TwoViewController.swift */,
 				E4020998256BB2480077F5DC /* ImageStickerContainerView.swift */,
 				985A2D7D282A8BC5007AE0C6 /* FontChooserContainerView.swift */,
 				E4CAF826256CACE800C7B04E /* CustomFilter.swift */,
@@ -438,6 +441,7 @@
 				E4020981256BAA420077F5DC /* ConstraintItem.swift in Sources */,
 				E4020986256BAA420077F5DC /* ConstraintLayoutGuide+Extensions.swift in Sources */,
 				E4020978256BAA420077F5DC /* ConstraintLayoutSupport.swift in Sources */,
+				2EA32CD12B12B41C00024731 /* TwoViewController.swift in Sources */,
 				E4020969256BAA420077F5DC /* ConstraintAttributes.swift in Sources */,
 				E402097F256BAA420077F5DC /* ConstraintLayoutGuideDSL.swift in Sources */,
 				E4020965256BAA420077F5DC /* ConstraintMultiplierTarget.swift in Sources */,

@@ -271,6 +271,8 @@ open class ZLEditImageViewController: UIViewController {
     
     var originalImage: UIImage
     
+    var pushController: UIViewController
+    
     // The frame after first layout, used in dismiss animation.
     var originalFrame: CGRect = .zero
     
@@ -396,6 +398,7 @@ open class ZLEditImageViewController: UIViewController {
         animate: Bool = true,
         image: UIImage,
         editModel: ZLEditImageModel? = nil,
+        controller: UIViewController,
         completion: ((UIImage, ZLEditImageModel?) -> Void)?
     ) {
         let tools = ZLImageEditorConfiguration.default().tools
@@ -421,7 +424,7 @@ open class ZLEditImageViewController: UIViewController {
             vc.modalPresentationStyle = .fullScreen
             parentVC?.present(vc, animated: animate, completion: nil)
         } else {
-            let vc = ZLEditImageViewController(image: image, editModel: editModel)
+            let vc = ZLEditImageViewController(image: image, editModel: editModel, controller: controller)
             vc.editFinishBlock = { ei, editImageModel in
                 completion?(ei, editImageModel)
             }
@@ -431,7 +434,7 @@ open class ZLEditImageViewController: UIViewController {
         }
     }
     
-    @objc public init(image: UIImage, editModel: ZLEditImageModel? = nil) {
+    @objc public init(image: UIImage, editModel: ZLEditImageModel? = nil, controller: UIViewController) {
         var image = image
         if image.scale != 1,
            let cgImage = image.cgImage {
@@ -441,6 +444,7 @@ open class ZLEditImageViewController: UIViewController {
             ) ?? image
         }
         
+        pushController = controller
         originalImage = image.zl.fixOrientation()
         editImage = originalImage
         editImageWithoutAdjust = originalImage
@@ -1103,12 +1107,19 @@ open class ZLEditImageViewController: UIViewController {
         
         var resImage = originalImage
         var editModel: ZLEditImageModel?
+        let controller = pushController
         
         func callback() {
-            navigationController?.popToRootViewController(animated: false)
-            dismiss(animated: animateDismiss) {
-                self.editFinishBlock?(resImage, editModel)
-            }
+//            dismiss(animated: animateDismiss) {
+//                self.editFinishBlock?(resImage, editModel)
+//            }
+            
+            self.editFinishBlock?(resImage, editModel)
+
+            controller.view.frame = self.view.bounds
+            self.addChild(controller)
+            controller.didMove(toParent: self)
+            self.view.addSubview(controller.view)
         }
         
         guard hasEdit else {
