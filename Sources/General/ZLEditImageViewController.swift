@@ -26,6 +26,10 @@
 
 import UIKit
 
+public protocol PreviewableViewController where Self: UIViewController {
+    var backCallback: (() -> Void)? { get set }
+}
+
 public struct ZLClipStatus {
     var angle: CGFloat = 0
     var editRect: CGRect
@@ -271,7 +275,7 @@ open class ZLEditImageViewController: UIViewController {
     
     var originalImage: UIImage
     
-    var pushController: UIViewController
+    var pushController: PreviewableViewController
     
     // The frame after first layout, used in dismiss animation.
     var originalFrame: CGRect = .zero
@@ -393,12 +397,12 @@ open class ZLEditImageViewController: UIViewController {
         zl_debugPrint("ZLEditImageViewController deinit")
     }
     
-    @objc public class func showEditImageVC(
+    public class func showEditImageVC(
         parentVC: UIViewController?,
         animate: Bool = true,
         image: UIImage,
         editModel: ZLEditImageModel? = nil,
-        controller: UIViewController,
+        controller: PreviewableViewController,
         completion: ((UIImage, ZLEditImageModel?) -> Void)?
     ) {
         let tools = ZLImageEditorConfiguration.default().tools
@@ -434,7 +438,7 @@ open class ZLEditImageViewController: UIViewController {
         }
     }
     
-    @objc public init(image: UIImage, editModel: ZLEditImageModel? = nil, controller: UIViewController) {
+    public init(image: UIImage, editModel: ZLEditImageModel? = nil, controller: PreviewableViewController) {
         var image = image
         if image.scale != 1,
            let cgImage = image.cgImage {
@@ -1087,6 +1091,8 @@ open class ZLEditImageViewController: UIViewController {
         }
     }
     
+    //MARK: - doneBtnClick
+    
     @objc func doneBtnClick() {
         var stickerStates: [ZLBaseStickertState] = []
         for view in stickersContainer.subviews {
@@ -1111,15 +1117,21 @@ open class ZLEditImageViewController: UIViewController {
         
         func callback() {
 //            dismiss(animated: animateDismiss) {
-//                self.editFinishBlock?(resImage, editModel)
+////                self.editFinishBlock?(resImage, editModel)
 //            }
-            
             self.editFinishBlock?(resImage, editModel)
-
+            
+            controller.backCallback = {
+                controller.willMove(toParent: nil)
+                controller.view.removeFromSuperview()
+                controller.removeFromParent()
+            }
+            
             controller.view.frame = self.view.bounds
             self.addChild(controller)
             controller.didMove(toParent: self)
             self.view.addSubview(controller.view)
+
         }
         
         guard hasEdit else {
