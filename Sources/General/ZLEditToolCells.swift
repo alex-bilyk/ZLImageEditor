@@ -33,11 +33,11 @@ class ZLEditToolCell: UICollectionViewCell {
             case .clip:
                 icon.image = .zl.getImage("zl_clip")
                 icon.highlightedImage = .zl.getImage("zl_clip")
-                nameLabel.text = "Crop"
+                nameLabel.text = localLanguageTextValue(.crop)
             case .filter:
                 icon.image = .zl.getImage("zl_filter")
                 icon.highlightedImage = .zl.getImage("zl_filter_selected")
-                nameLabel.text = "Filters"
+                nameLabel.text = localLanguageTextValue(.filters)
             case .adjust:
                 if #available(iOS 13.0, *) {
                     icon.image = .zl.getImage("zl_adjust")?.withTintColor(.black, renderingMode: .alwaysOriginal)
@@ -45,11 +45,11 @@ class ZLEditToolCell: UICollectionViewCell {
                     // Fallback on earlier versions
                 }
                 icon.highlightedImage = .zl.getImage("zl_adjust_selected")
-                nameLabel.text = "Adjust"
+                nameLabel.text = localLanguageTextValue(.adjust)
             case .draw:
                 icon.image = .zl.getImage("zl_drawLine")
                 icon.highlightedImage = .zl.getImage("zl_drawLine_selected")
-                nameLabel.text = "Draw"
+                nameLabel.text = localLanguageTextValue(.draw)
             case .mosaic:
                 if #available(iOS 13.0, *) {
                     icon.image = .zl.getImage("zl_mosaic")?.withTintColor(.black, renderingMode: .alwaysOriginal)
@@ -57,11 +57,11 @@ class ZLEditToolCell: UICollectionViewCell {
                     // Fallback on earlier versions
                 }
                 icon.highlightedImage = .zl.getImage("zl_mosaic_selected")
-                nameLabel.text = "Blur"
+                nameLabel.text = localLanguageTextValue(.blur)
             case .imageSticker:
                 icon.image = .zl.getImage("zl_imageSticker")
                 icon.highlightedImage = .zl.getImage("zl_imageSticker")
-                nameLabel.text = "Signature"
+                nameLabel.text = localLanguageTextValue(.signature)
             case .textSticker:
                 if #available(iOS 13.0, *) {
                     icon.image = .zl.getImage("zl_textSticker")?.withTintColor(.black, renderingMode: .alwaysOriginal)
@@ -69,7 +69,7 @@ class ZLEditToolCell: UICollectionViewCell {
                     // Fallback on earlier versions
                 }
                 icon.highlightedImage = .zl.getImage("zl_textSticker")
-                nameLabel.text = "Add Text"
+                nameLabel.text = localLanguageTextValue(.addText)
             }
             if let color = UIColor.zl.toolIconHighlightedColor {
                 icon.highlightedImage = icon.highlightedImage?

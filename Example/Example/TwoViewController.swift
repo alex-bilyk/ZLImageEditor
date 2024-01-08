@@ -1,7 +1,7 @@
 import UIKit
 import ZLImageEditor
 
-final class TwoViewController: UIViewController, PreviewableViewController {
+final class TwoViewController: UIViewController {
     
     var backCallback: (() -> Void)?
     

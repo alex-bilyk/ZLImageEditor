@@ -7,3 +7,11 @@
 "saturation" = "饱和度";
 "textStickerRemoveTips" = "拖到此处删除";
 "hudProcessing" = "正在处理";
+
+"Crop" = "添加文字";
+"Filters" = "过滤器";
+"Adjust" = "调整";
+"Draw" = "画";
+"Blur" = "模糊";
+"Signature" = "签名";
+"AddText" = "添加文字";

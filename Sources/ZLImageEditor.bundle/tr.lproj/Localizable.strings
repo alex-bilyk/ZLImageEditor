@@ -7,3 +7,11 @@
 "saturation" = "Canlılık";
 "textStickerRemoveTips" = "Kaldırmak için buraya sürükleyin";
 "hudProcessing" = "işleniyor";
+
+"Crop" = "Mahsul";
+"Filters" = "Filtreler";
+"Adjust" = "Ayarlamak";
+"Draw" = "Çizmek";
+"Blur" = "Bulanıklık";
+"Signature" = "İmza";
+"AddText" = "Yazı ekle";

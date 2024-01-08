@@ -7,3 +7,11 @@
 "saturation" = "채도";
 "textStickerRemoveTips" = "제거하려면 여기로 드래그하세요";
 "hudProcessing" = "처리 중";
+
+"Crop" = "수확고";
+"Filters" = "필터";
+"Adjust" = "조정하다";
+"Draw" = "그리다";
+"Blur" = "흐림";
+"Signature" = "서명";
+"AddText" = "텍스트 추가";

@@ -7,3 +7,11 @@
 "saturation" = "暖かさ";
 "textStickerRemoveTips" = "ここにドラッグして削除します";
 "hudProcessing" = "処理中";
+
+"Crop" = "作物";
+"Filters" = "フィルター";
+"Adjust" = "調整する";
+"Draw" = "描く";
+"Blur" = "ぼかし";
+"Signature" = "サイン";
+"AddText" = "テキストを追加";

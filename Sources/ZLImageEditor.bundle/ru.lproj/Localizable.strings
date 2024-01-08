@@ -7,3 +7,11 @@
 "saturation" = "Насыщенность";
 "textStickerRemoveTips" = "Перетащите сюда, чтобы удалить";
 "hudProcessing" = "Обработка";
+
+"Crop" = "Обрезать";
+"Filters" = "Фильтры";
+"Adjust" = "Регулировать";
+"Draw" = "Рисовать";
+"Blur" = "Размытие";
+"Signature" = "Подпись";
+"AddText" = "Добавить текст";

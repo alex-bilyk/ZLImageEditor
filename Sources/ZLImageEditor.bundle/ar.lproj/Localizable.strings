@@ -7,3 +7,11 @@
 "saturation" = "صفاء اللون";
 "textStickerRemoveTips" = "اسحب هنا للإزالة";
 "hudProcessing" = "جار المعالجة";
+
+"Crop" = "اقتصاص";
+"Filters" = "المرشحات";
+"Adjust" = "يُعدِّل";
+"Draw" = "يرسم";
+"Blur" = "طمس";
+"Signature" = "إمضاء";
+"AddText" = "إضافة نص";

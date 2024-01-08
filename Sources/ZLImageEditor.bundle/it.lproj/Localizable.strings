@@ -7,3 +7,11 @@
 "saturation" = "Saturazione";
 "textStickerRemoveTips" = "Trascina qui per rimuovere";
 "hudProcessing" = "Elaborazione in corse";
+
+"Crop" = "Raccolto";
+"Filters" = "Filtri";
+"Adjust" = "Regolare";
+"Draw" = "Disegno";
+"Blur" = "Sfocatura";
+"Signature" = "Firma";
+"AddText" = "Aggiungi testo";

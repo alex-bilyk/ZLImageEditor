@@ -26,10 +26,6 @@
 
 import UIKit
 
-public protocol PreviewableViewController where Self: UIViewController {
-    var backCallback: (() -> Void)? { get set }
-}
-
 public struct ZLClipStatus {
     var angle: CGFloat = 0
     var editRect: CGRect
@@ -275,8 +271,6 @@ open class ZLEditImageViewController: UIViewController {
     
     var originalImage: UIImage
     
-    var pushController: PreviewableViewController
-    
     // The frame after first layout, used in dismiss animation.
     var originalFrame: CGRect = .zero
     
@@ -397,91 +391,90 @@ open class ZLEditImageViewController: UIViewController {
         zl_debugPrint("ZLEditImageViewController deinit")
     }
     
-    public class func showEditImageVC(
-        parentVC: UIViewController?,
-        animate: Bool = true,
-        image: UIImage,
-        editModel: ZLEditImageModel? = nil,
-        controller: PreviewableViewController,
-        completion: ((UIImage, ZLEditImageModel?) -> Void)?
-    ) {
-        let tools = ZLImageEditorConfiguration.default().tools
-        if ZLImageEditorConfiguration.default().showClipDirectlyIfOnlyHasClipTool, tools.count == 1, tools.contains(.clip) {
-            let vc = ZLClipImageViewController(
-                image: image,
-                status: editModel?.clipStatus ?? ZLClipStatus(editRect: CGRect(origin: .zero, size: image.size))
-            )
-            
-            vc.clipDoneBlock = { angle, editRect, ratio in
-                let m = ZLEditImageModel(
-                    drawPaths: [],
-                    mosaicPaths: [],
-                    clipStatus: ZLClipStatus(angle: angle, editRect: editRect, ratio: ratio),
-                    adjustStatus: ZLAdjustStatus(),
-                    selectFilter: .normal,
-                    stickers: [],
-                    actions: []
+    @objc public class func showEditImageVC(
+            parentVC: UIViewController?,
+            animate: Bool = true,
+            image: UIImage,
+            editModel: ZLEditImageModel? = nil,
+            completion: ((UIImage, ZLEditImageModel?) -> Void)?
+        ) {
+            let tools = ZLImageEditorConfiguration.default().tools
+            if ZLImageEditorConfiguration.default().showClipDirectlyIfOnlyHasClipTool, tools.count == 1, tools.contains(.clip) {
+                let vc = ZLClipImageViewController(
+                    image: image,
+                    status: editModel?.clipStatus ?? ZLClipStatus(editRect: CGRect(origin: .zero, size: image.size))
                 )
-                completion?(image.zl.clipImage(angle: angle, editRect: editRect, isCircle: ratio.isCircle) ?? image, m)
+                
+                vc.clipDoneBlock = { angle, editRect, ratio in
+                    let m = ZLEditImageModel(
+                        drawPaths: [],
+                        mosaicPaths: [],
+                        clipStatus: ZLClipStatus(angle: angle, editRect: editRect, ratio: ratio),
+                        adjustStatus: ZLAdjustStatus(),
+                        selectFilter: .normal,
+                        stickers: [],
+                        actions: []
+                    )
+                    completion?(image.zl.clipImage(angle: angle, editRect: editRect, isCircle: ratio.isCircle) ?? image, m)
+                }
+                vc.animateDismiss = animate
+                vc.modalPresentationStyle = .fullScreen
+                parentVC?.present(vc, animated: animate, completion: nil)
+            } else {
+                let vc = ZLEditImageViewController(image: image, editModel: editModel)
+                vc.editFinishBlock = { ei, editImageModel in
+                    completion?(ei, editImageModel)
+                }
+                vc.animateDismiss = animate
+                vc.modalPresentationStyle = .fullScreen
+                parentVC?.present(vc, animated: animate, completion: nil)
             }
-            vc.animateDismiss = animate
-            vc.modalPresentationStyle = .fullScreen
-            parentVC?.present(vc, animated: animate, completion: nil)
-        } else {
-            let vc = ZLEditImageViewController(image: image, editModel: editModel, controller: controller)
-            vc.editFinishBlock = { ei, editImageModel in
-                completion?(ei, editImageModel)
-            }
-            vc.animateDismiss = animate
-            vc.modalPresentationStyle = .fullScreen
-            parentVC?.present(vc, animated: animate, completion: nil)
         }
-    }
     
-    public init(image: UIImage, editModel: ZLEditImageModel? = nil, controller: PreviewableViewController) {
-        var image = image
-        if image.scale != 1,
-           let cgImage = image.cgImage {
-            image = image.zl.resize_vI(
-                CGSize(width: cgImage.width, height: cgImage.height),
-                scale: 1
-            ) ?? image
+    
+    @objc public init(image: UIImage, editModel: ZLEditImageModel? = nil) {
+            var image = image
+            if image.scale != 1,
+               let cgImage = image.cgImage {
+                image = image.zl.resize_vI(
+                    CGSize(width: cgImage.width, height: cgImage.height),
+                    scale: 1
+                ) ?? image
+            }
+            
+            originalImage = image.zl.fixOrientation()
+            editImage = originalImage
+            editImageWithoutAdjust = originalImage
+            currentClipStatus = editModel?.clipStatus ?? ZLClipStatus(editRect: CGRect(origin: .zero, size: image.size))
+            preClipStatus = currentClipStatus
+            drawColors = ZLImageEditorConfiguration.default().drawColors
+            currentFilter = editModel?.selectFilter ?? .normal
+            drawPaths = editModel?.drawPaths ?? []
+            mosaicPaths = editModel?.mosaicPaths ?? []
+            currentAdjustStatus = editModel?.adjustStatus ?? ZLAdjustStatus()
+            preAdjustStatus = currentAdjustStatus
+            
+            var ts = ZLImageEditorConfiguration.default().tools
+            if ts.contains(.imageSticker), ZLImageEditorConfiguration.default().imageStickerContainerView == nil {
+                ts.removeAll { $0 == .imageSticker }
+            }
+            tools = ts
+            adjustTools = ZLImageEditorConfiguration.default().adjustTools
+            selectedAdjustTool = adjustTools.first
+            editorManager = ZLEditorManager(actions: editModel?.actions ?? [])
+            
+            super.init(nibName: nil, bundle: nil)
+            
+            editorManager.delegate = self
+            
+            if !drawColors.contains(currentDrawColor) {
+                currentDrawColor = drawColors.first!
+            }
+            
+            stickers = editModel?.stickers.compactMap {
+                ZLBaseStickerView.initWithState($0)
+            } ?? []
         }
-        
-        pushController = controller
-        originalImage = image.zl.fixOrientation()
-        editImage = originalImage
-        editImageWithoutAdjust = originalImage
-        currentClipStatus = editModel?.clipStatus ?? ZLClipStatus(editRect: CGRect(origin: .zero, size: image.size))
-        preClipStatus = currentClipStatus
-        drawColors = ZLImageEditorConfiguration.default().drawColors
-        currentFilter = editModel?.selectFilter ?? .normal
-        drawPaths = editModel?.drawPaths ?? []
-        mosaicPaths = editModel?.mosaicPaths ?? []
-        currentAdjustStatus = editModel?.adjustStatus ?? ZLAdjustStatus()
-        preAdjustStatus = currentAdjustStatus
-        
-        var ts = ZLImageEditorConfiguration.default().tools
-        if ts.contains(.imageSticker), ZLImageEditorConfiguration.default().imageStickerContainerView == nil {
-            ts.removeAll { $0 == .imageSticker }
-        }
-        tools = ts
-        adjustTools = ZLImageEditorConfiguration.default().adjustTools
-        selectedAdjustTool = adjustTools.first
-        editorManager = ZLEditorManager(actions: editModel?.actions ?? [])
-        
-        super.init(nibName: nil, bundle: nil)
-        
-        editorManager.delegate = self
-        
-        if !drawColors.contains(currentDrawColor) {
-            currentDrawColor = drawColors.first!
-        }
-        
-        stickers = editModel?.stickers.compactMap {
-            ZLBaseStickerView.initWithState($0)
-        } ?? []
-    }
     
     @available(*, unavailable)
     public required init?(coder: NSCoder) {
@@ -603,7 +596,7 @@ open class ZLEditImageViewController: UIViewController {
         //        redoBtn.frame = CGRect(x: view.zl.width - 15 - 30, y: toolY - 60, width: 30, height: 30)
         //        undoBtn.frame = CGRect(x: redoBtn.zl.left - 15 - 30, y: toolY - 60, width: 30, height: 30)
         
-        editToolCollectionView.frame = CGRect(x: 0, y: toolY, width: view.zl.width - 10, height: 50)
+        editToolCollectionView.frame = CGRect(x: 0, y: toolY, width: view.zl.width - 10, height: 60)
         
         if !drawPaths.isEmpty {
             drawLine()
@@ -1094,82 +1087,69 @@ open class ZLEditImageViewController: UIViewController {
     //MARK: - doneBtnClick
     
     @objc func doneBtnClick() {
-        var stickerStates: [ZLBaseStickertState] = []
-        for view in stickersContainer.subviews {
-            guard let view = view as? ZLBaseStickerView else { continue }
-            stickerStates.append(view.state)
-        }
-        
-        var hasEdit = true
-        if drawPaths.isEmpty,
-           currentClipStatus.editRect.size == imageSize,
-           currentClipStatus.angle == 0,
-           mosaicPaths.isEmpty,
-           stickerStates.isEmpty,
-           currentFilter.applier == nil,
-           currentAdjustStatus.allValueIsZero {
-            hasEdit = false
-        }
-        
-        var resImage = originalImage
-        var editModel: ZLEditImageModel?
-        let controller = pushController
-        
-        func callback() {
-//            dismiss(animated: animateDismiss) {
-////                self.editFinishBlock?(resImage, editModel)
-//            }
-            self.editFinishBlock?(resImage, editModel)
-            
-            controller.backCallback = {
-                controller.willMove(toParent: nil)
-                controller.view.removeFromSuperview()
-                controller.removeFromParent()
+            var stickerStates: [ZLBaseStickertState] = []
+            for view in stickersContainer.subviews {
+                guard let view = view as? ZLBaseStickerView else { continue }
+                stickerStates.append(view.state)
             }
             
-            controller.view.frame = self.view.bounds
-            self.addChild(controller)
-            controller.didMove(toParent: self)
-            self.view.addSubview(controller.view)
-
-        }
-        
-        guard hasEdit else {
-            callback()
-            return
-        }
-        
-        autoreleasepool {
-            let hud = ZLProgressHUD(style: ZLImageEditorUIConfiguration.default().hudStyle)
-            hud.show(in: view)
+            var hasEdit = true
+            if drawPaths.isEmpty,
+               currentClipStatus.editRect.size == imageSize,
+               currentClipStatus.angle == 0,
+               mosaicPaths.isEmpty,
+               stickerStates.isEmpty,
+               currentFilter.applier == nil,
+               currentAdjustStatus.allValueIsZero {
+                hasEdit = false
+            }
             
-            DispatchQueue.main.async { [self] in
-                resImage = buildImage()
-                resImage = resImage.zl
-                    .clipImage(
-                        angle: currentClipStatus.angle,
-                        editRect: currentClipStatus.editRect,
-                        isCircle: currentClipStatus.ratio?.isCircle ?? false
-                    ) ?? resImage
-                if let oriDataSize = originalImage.jpegData(compressionQuality: 1)?.count {
-                    resImage = resImage.zl.compress(to: oriDataSize)
+            var resImage = originalImage
+            var editModel: ZLEditImageModel?
+            
+            func callback() {
+                dismiss(animated: animateDismiss) {
+                    self.editFinishBlock?(resImage, editModel)
                 }
-                
-                editModel = ZLEditImageModel(
-                    drawPaths: drawPaths,
-                    mosaicPaths: mosaicPaths,
-                    clipStatus: currentClipStatus,
-                    adjustStatus: currentAdjustStatus,
-                    selectFilter: currentFilter,
-                    stickers: stickerStates,
-                    actions: editorManager.actions
-                )
-                
-                hud.hide()
+            }
+            
+            guard hasEdit else {
                 callback()
+                return
+            }
+            
+            autoreleasepool {
+                let hud = ZLProgressHUD(style: ZLImageEditorUIConfiguration.default().hudStyle)
+                hud.show(in: view)
+                
+                DispatchQueue.main.async { [self] in
+                    resImage = buildImage()
+                    resImage = resImage.zl
+                        .clipImage(
+                            angle: currentClipStatus.angle,
+                            editRect: currentClipStatus.editRect,
+                            isCircle: currentClipStatus.ratio?.isCircle ?? false
+                        ) ?? resImage
+                    if let oriDataSize = originalImage.jpegData(compressionQuality: 1)?.count {
+                        resImage = resImage.zl.compress(to: oriDataSize)
+                    }
+                    
+                    editModel = ZLEditImageModel(
+                        drawPaths: drawPaths,
+                        mosaicPaths: mosaicPaths,
+                        clipStatus: currentClipStatus,
+                        adjustStatus: currentAdjustStatus,
+                        selectFilter: currentFilter,
+                        stickers: stickerStates,
+                        actions: editorManager.actions
+                    )
+                    
+                    hud.hide()
+                    callback()
+                }
             }
         }
-    }
+    
     
     @objc func undoBtnClick() {
         editorManager.undoAction()

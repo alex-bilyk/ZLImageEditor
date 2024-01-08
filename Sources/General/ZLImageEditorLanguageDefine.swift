@@ -168,6 +168,14 @@ public struct ZLLocalLanguageKey: Hashable {
     
     /// Processing (正在处理)
     public static let hudProcessing = ZLLocalLanguageKey(rawValue: "hudProcessing")
+    
+    public static let crop = ZLLocalLanguageKey(rawValue: "Crop")
+    public static let filters = ZLLocalLanguageKey(rawValue: "Filters")
+    public static let adjust = ZLLocalLanguageKey(rawValue: "Adjust")
+    public static let draw = ZLLocalLanguageKey(rawValue: "Draw")
+    public static let blur = ZLLocalLanguageKey(rawValue: "Blur")
+    public static let signature = ZLLocalLanguageKey(rawValue: "Signature")
+    public static let addText = ZLLocalLanguageKey(rawValue: "AddText")
 }
 
 func localLanguageTextValue(_ key: ZLLocalLanguageKey) -> String {

@@ -7,3 +7,11 @@
 "saturation" = "Ketepuaan";
 "textStickerRemoveTips" = "Sleep hier om te verwijderen";
 "hudProcessing" = "Verwerken";
+
+"Crop" = "Bijsnijden";
+"Filters" = "Filters";
+"Adjust" = "Aanpassen";
+"Draw" = "Tekenen";
+"Blur" = "Vervagen";
+"Signature" = "Handtekening";
+"AddText" = "Voeg tekst toe";
