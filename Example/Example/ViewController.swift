@@ -35,6 +35,8 @@ class ViewController: UIViewController {
     
     let config = ZLImageEditorConfiguration.default()
     
+    private let notificationCenter = NotificationCenter.default
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,6 +46,45 @@ class ViewController: UIViewController {
         } else {
             // Fallback on earlier versions
         }
+        notification()
+    }
+    
+    private func notification() {
+        notificationCenter.addObserver(self, selector: #selector(cropAction), name: Notification.Name("crop"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(filterAction), name: Notification.Name("filter"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustAction), name: Notification.Name("adjust"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(drawAction), name: Notification.Name("draw"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(blurAction), name: Notification.Name("blur"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(signatureAction), name: Notification.Name("signature"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(addTextAction), name: Notification.Name("addText"), object: nil)
+    }
+    
+    @objc private func cropAction() {
+        print("crop")
+    }
+    
+    @objc private func filterAction() {
+        print("filter")
+    }
+    
+    @objc private func adjustAction() {
+        print("adjust")
+    }
+    
+    @objc private func drawAction() {
+        print("draw")
+    }
+    
+    @objc private func blurAction() {
+        print("blur")
+    }
+    
+    @objc private func signatureAction() {
+        print("signature")
+    }
+    
+    @objc private func addTextAction() {
+        print("addText")
     }
     
     func setupUI() {

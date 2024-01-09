@@ -25,6 +25,7 @@
 //  THE SOFTWARE.
 
 import UIKit
+import UserNotifications
 
 public struct ZLClipStatus {
     var angle: CGFloat = 0
@@ -353,6 +354,8 @@ open class ZLEditImageViewController: UIViewController {
     private var defaultDrawPathWidth: CGFloat = 0
     
     private var impactFeedback: UIImpactFeedbackGenerator?
+    
+    private let notificationCenter = NotificationCenter.default
     
     private lazy var panGes: UIPanGestureRecognizer = {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(drawAction(_:)))
@@ -1879,18 +1882,25 @@ extension ZLEditImageViewController: UICollectionViewDataSource, UICollectionVie
             switch toolType {
             case .clip:
                 clipBtnClick()
+                notificationCenter.post(name: Notification.Name("crop"), object: nil)
             case .filter:
                 filterBtnClick()
+                notificationCenter.post(name: Notification.Name("filter"), object: nil)
             case .adjust:
                 adjustBtnClick()
+                notificationCenter.post(name: Notification.Name("adjust"), object: nil)
             case .draw:
                 drawBtnClick()
+                notificationCenter.post(name: Notification.Name("draw"), object: nil)
             case .mosaic:
                 mosaicBtnClick()
+                notificationCenter.post(name: Notification.Name("blur"), object: nil)
             case .imageSticker:
                 imageStickerBtnClick()
+                notificationCenter.post(name: Notification.Name("signature"), object: nil)
             case .textSticker:
                 textStickerBtnClick()
+                notificationCenter.post(name: Notification.Name("addText"), object: nil)
             }
         } else if collectionView == drawColorCollectionView {
             currentDrawColor = drawColors[indexPath.row]
